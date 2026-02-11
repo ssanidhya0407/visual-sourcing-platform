@@ -121,8 +121,18 @@ export default function SourcingDashboard() {
                     <p className="text-foreground/60">Evaluate manufacturability and map designs to supply signals.</p>
                 </div>
                 <div className="flex gap-4">
-                    <span className="px-3 py-1 bg-white/5 rounded-full text-sm">
-                        Pending Reviews: <span className="font-bold text-white">{tasks.length}</span>
+                    <button
+                        onClick={() => {
+                            setSearchingItemCtx(null); // General search mode
+                            setShowSearchModal(true);
+                        }}
+                        className="px-4 py-2 bg-white text-black rounded-full font-medium flex items-center gap-2 hover:bg-gray-200 transition-colors"
+                    >
+                        <Globe className="w-4 h-4" />
+                        Global Supplier Search
+                    </button>
+                    <span className="px-3 py-2 bg-white/5 rounded-full text-sm flex items-center">
+                        Pending: <span className="font-bold text-white ml-2">{tasks.length}</span>
                     </span>
                 </div>
             </div>

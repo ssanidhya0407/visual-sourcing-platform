@@ -53,9 +53,10 @@ export class ManufacturerService {
 
     private static getImageForQuery(query: string): string {
         const q = query.toLowerCase();
-        if (q.includes('ring')) return 'https://images.unsplash.com/photo-1515562141207-7a88fb0537bf?w=800&auto=format&fit=crop&q=60';
-        if (q.includes('neck')) return 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?w=800&auto=format&fit=crop&q=60';
-        if (q.includes('brace')) return 'https://images.unsplash.com/photo-1611591437281-460bfbe157a8?w=800&auto=format&fit=crop&q=60';
-        return 'https://images.unsplash.com/photo-1515562141207-7a88fb0537bf?w=800&auto=format&fit=crop&q=60'; // Fallback
+        // Verified Images
+        if (q.includes('ring')) return 'https://images.unsplash.com/photo-1603974372039-adc49044b6bd?w=800&auto=format&fit=crop&q=60'; // Vintage Ring
+        if (q.includes('neck') || q.includes('pendant')) return 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&auto=format&fit=crop&q=60'; // Gold Chain
+        if (q.includes('brace') || q.includes('cuff')) return 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=60'; // Diamond (Tennis)
+        return 'https://images.unsplash.com/photo-1603974372039-adc49044b6bd?w=800&auto=format&fit=crop&q=60'; // Fallback to Ring
     }
 }
