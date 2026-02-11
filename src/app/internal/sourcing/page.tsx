@@ -117,7 +117,7 @@ export default function SourcingDashboard() {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold font-serif italic text-primary">Sourcing Feasibility</h1>
+                    <h1 className="text-3xl font-bold text-primary">Sourcing Feasibility</h1>
                     <p className="text-foreground/60">Evaluate manufacturability and map designs to supply signals.</p>
                 </div>
                 <div className="flex gap-4">
