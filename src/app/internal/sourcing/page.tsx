@@ -12,12 +12,20 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { ManufacturerService, ExternalProduct } from "@/services/manufacturerService";
 
 export default function SourcingDashboard() {
     const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedTask, setSelectedTask] = useState<any>(null);
     const [editingItem, setEditingItem] = useState<any>(null); // { orderId, itemIndex, itemData }
+
+    // External Search State
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const [searchResults, setSearchResults] = useState<ExternalProduct[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchingItemCtx, setSearchingItemCtx] = useState<{ orderId: string, itemIndex: number, query: string } | null>(null);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -51,7 +59,6 @@ export default function SourcingDashboard() {
 
     const handleCompleteTask = async (task: any) => {
         try {
-            // Validate that all items have been "reviewed" (optional logic, skipping for flexibility)
             const res = await fetch('/api/sourcing/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -63,12 +70,45 @@ export default function SourcingDashboard() {
             });
 
             if (res.ok) {
-                fetchTasks(); // Refresh list
+                fetchTasks();
                 setSelectedTask(null);
             }
         } catch (error) {
             console.error("Failed to complete task", error);
         }
+    };
+
+    // --- External Search Handlers ---
+
+    const handleOpenSearch = async (orderId: string, itemIndex: number, query: string) => {
+        setSearchingItemCtx({ orderId, itemIndex, query });
+        setShowSearchModal(true);
+        setIsSearching(true);
+
+        // Auto-search on open
+        try {
+            const results = await ManufacturerService.searchGlobalSuppliers(query);
+            setSearchResults(results);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    const handleSelectExternal = (product: ExternalProduct) => {
+        if (!searchingItemCtx) return;
+
+        handleUpdateItem(searchingItemCtx.orderId, searchingItemCtx.itemIndex, {
+            id: product.id,
+            source: 'external',
+            baseCost: product.price,
+            moq: product.moq,
+            leadTime: product.leadTime
+        });
+
+        setShowSearchModal(false);
+        setSearchingItemCtx(null);
     };
 
     if (loading) return <div className="p-8">Loading sourcing tasks...</div>;
@@ -139,8 +179,16 @@ export default function SourcingDashboard() {
                                                 <div className="flex items-center gap-2">
                                                     <span className="font-mono">${item.baseCost}</span>
                                                     <button
+                                                        onClick={() => handleOpenSearch(task.id, idx, item.name)}
+                                                        className="p-1 hover:bg-white/10 rounded"
+                                                        title="Search Global Suppliers"
+                                                    >
+                                                        <Globe className="w-3 h-3 text-blue-400" />
+                                                    </button>
+                                                    <button
                                                         onClick={() => setEditingItem({ orderId: task.id, itemIndex: idx, itemData: item })}
                                                         className="p-1 hover:bg-white/10 rounded"
+                                                        title="Edit Cost"
                                                     >
                                                         <DollarSign className="w-3 h-3 text-white/60" />
                                                     </button>
@@ -192,6 +240,71 @@ export default function SourcingDashboard() {
                             >
                                 Update Cost
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* External Search Modal */}
+            {showSearchModal && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-[#111] border border-white/10 rounded-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
+                        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-xl font-medium">Global Supplier Network</h3>
+                                <p className="text-sm text-white/60">Real-time market intelligence matching "{searchingItemCtx?.query}"</p>
+                            </div>
+                            <button onClick={() => setShowSearchModal(false)} className="text-white/40 hover:text-white">Close</button>
+                        </div>
+
+                        <div className="flex-1 overflow-auto p-6">
+                            {isSearching ? (
+                                <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                                    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                    <p className="text-white/40">Querying global databases...</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {searchResults.map(result => (
+                                        <div key={result.id} className="bg-white/5 border border-white/10 p-4 rounded-lg hover:bg-white/10 transition-colors flex gap-4 group">
+                                            <img src={result.image} className="w-24 h-24 object-cover rounded bg-black" />
+                                            <div className="flex-1">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <h4 className="font-medium">{result.name}</h4>
+                                                        <p className="text-xs text-blue-400 flex items-center gap-1 mt-1">
+                                                            <Globe className="w-3 h-3" /> {result.supplier}
+                                                        </p>
+                                                    </div>
+                                                    <span className="text-lg font-mono">${result.price}</span>
+                                                </div>
+
+                                                <div className="grid grid-cols-3 gap-2 mt-4 text-xs text-white/60">
+                                                    <div>
+                                                        <span className="block text-white/20">MOQ</span>
+                                                        {result.moq} units
+                                                    </div>
+                                                    <div>
+                                                        <span className="block text-white/20">Lead Time</span>
+                                                        {result.leadTime}
+                                                    </div>
+                                                    <div>
+                                                        <span className="block text-white/20">Location</span>
+                                                        {result.location}
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => handleSelectExternal(result)}
+                                                    className="w-full mt-4 py-2 bg-white text-black text-sm font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    Select & Map SKU
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
