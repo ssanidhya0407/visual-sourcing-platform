@@ -2,8 +2,28 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/firebase-admin';
 import { AuditService } from '@/services/auditService';
 
+
+async function verifyAdmin(request: Request) {
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) return null;
+
+    const token = authHeader.split('Bearer ')[1];
+    try {
+        const decodedToken = await auth.verifyIdToken(token);
+        if (decodedToken.role === 'admin' || decodedToken.admin === true) return decodedToken;
+        return null;
+    } catch (e) {
+        return null; // Invalid token
+    }
+}
+
 // List Users
-export async function GET() {
+export async function GET(request: Request) {
+    const adminUser = await verifyAdmin(request);
+    if (!adminUser) {
+        return NextResponse.json({ success: false, error: 'Unauthorized: Admin access required' }, { status: 403 });
+    }
+
     try {
         const listUsersResult = await auth.listUsers(100);
         const users = listUsersResult.users.map(user => ({
@@ -24,6 +44,11 @@ export async function GET() {
 
 // Create User
 export async function POST(request: Request) {
+    const adminUser = await verifyAdmin(request);
+    if (!adminUser) {
+        return NextResponse.json({ success: false, error: 'Unauthorized: Admin access required' }, { status: 403 });
+    }
+
     try {
         const body = await request.json();
         const { email, password, displayName, role } = body;
@@ -54,8 +79,14 @@ export async function POST(request: Request) {
         }, { status: 500 });
     }
 }
+
 // Delete User
 export async function DELETE(request: Request) {
+    const adminUser = await verifyAdmin(request);
+    if (!adminUser) {
+        return NextResponse.json({ success: false, error: 'Unauthorized: Admin access required' }, { status: 403 });
+    }
+
     try {
         const { searchParams } = new URL(request.url);
         const uid = searchParams.get('uid');
