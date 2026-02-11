@@ -20,7 +20,15 @@ export class SourcingService {
      */
     static async getRecommendations(attributes: ImageAttributes): Promise<SourcingResult> {
         // Fetch all products via API
-        const allProducts = await fetchProducts(attributes.category);
+        // Fetch all products directly from DB (Server-Side)
+        const productsSnapshot = await db.collection('products').get();
+        let allProducts: ProductSKU[] = productsSnapshot.docs.map(doc => doc.data() as ProductSKU);
+
+        // Filter by category if possible (though we fetch all for now to maximize potential fallbacks if needed, 
+        // but strict category match is better for relevance).
+        if (attributes.category) {
+            allProducts = allProducts.filter(p => p.attributes.category === attributes.category);
+        }
 
         // Fetch Global Settings for robust pricing
         let settings = { internalMargin: 1.2, externalMargin: 1.45, externalBuffer: 50 };
