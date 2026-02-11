@@ -3,3 +3,7 @@ node_modules
 .env.local
 .DS_Store
 service-account.json
+
+# Documentation (local PDFs only)
+METHODOLOGY.md
+PROJECT_DOCUMENTATION.md
