@@ -74,3 +74,10 @@ export async function analyzeImageAction(imageBase64: string): Promise<ImageAttr
         };
     }
 }
+
+import { SourcingService, SourcingResult } from '@/services/sourcingService';
+
+export async function getSourcingRecommendationsAction(attributes: ImageAttributes): Promise<SourcingResult> {
+    // This runs on the server, so it can import SourcingService which uses firebase-admin
+    return await SourcingService.getRecommendations(attributes);
+}

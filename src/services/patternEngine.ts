@@ -1,5 +1,5 @@
 import { ProductSKU } from './catalogService';
-import { ImageAttributes } from './imageProcessing';
+import { ImageAttributes } from '@/app/actions';
 
 export class PatternEngine {
     /**

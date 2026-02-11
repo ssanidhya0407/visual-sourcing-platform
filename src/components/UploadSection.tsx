@@ -3,8 +3,8 @@
 import { useState, useRef } from "react";
 import { Upload, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { analyzeImageAction } from "@/app/actions";
-import { SourcingService, SourcingResult } from "@/services/sourcingService";
+import { analyzeImageAction, getSourcingRecommendationsAction } from "@/app/actions";
+import { SourcingResult } from "@/services/sourcingService"; // Type import is fine
 import { cn } from "@/lib/utils";
 
 interface UploadSectionProps {
@@ -49,7 +49,7 @@ export function UploadSection({ onResults }: UploadSectionProps) {
 
 
                 // Pass sessionId to sourcing service if needed, or just track it here for the user journey step
-                const results = await SourcingService.getRecommendations(attributes);
+                const results = await getSourcingRecommendationsAction(attributes);
                 onResults(results); // attributes + session could be passed here if we modified the interface
                 setIsUploading(false);
             };
