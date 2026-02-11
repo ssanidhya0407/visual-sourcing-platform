@@ -139,21 +139,19 @@ export default function InternalLayout({
                     )}
                 </nav>
 
-                <div className="pt-6 border-t border-white/10">
-                    <div className="flex items-center gap-3 px-4 mb-4">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500" />
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{user?.displayName || user?.email?.split('@')[0] || 'Admin'}</p>
-                            <p className="text-xs text-white/40 capitalize">{role}</p>
-                        </div>
+                <div className="pt-6 border-t border-white/10 px-4">
+                    <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium truncate text-white/80">
+                            {user?.displayName || user?.email || 'User'}
+                        </span>
+                        <button
+                            onClick={() => auth.signOut()}
+                            className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                            title="Sign Out"
+                        >
+                            <LogOut className="w-4 h-4" />
+                        </button>
                     </div>
-                    <button
-                        onClick={() => auth.signOut()}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:text-red-300 w-full transition-colors"
-                    >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                    </button>
                 </div>
             </aside>
 
