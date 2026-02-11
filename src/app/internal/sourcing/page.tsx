@@ -8,7 +8,8 @@ import {
     Globe,
     DollarSign,
     Save,
-    ExternalLink
+    ExternalLink,
+    Search
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -259,12 +260,35 @@ export default function SourcingDashboard() {
             {showSearchModal && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-[#111] border border-white/10 rounded-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
-                        <div className="p-6 border-b border-white/10 flex justify-between items-center">
-                            <div>
-                                <h3 className="text-xl font-medium">Global Supplier Network</h3>
-                                <p className="text-sm text-white/60">Real-time market intelligence matching "{searchingItemCtx?.query}"</p>
+                        <div className="p-6 border-b border-white/10">
+                            <div className="flex justify-between items-center mb-4">
+                                <div>
+                                    <h3 className="text-xl font-medium">Global Supplier Network</h3>
+                                    <p className="text-sm text-white/60">Real-time market intelligence.</p>
+                                </div>
+                                <button onClick={() => setShowSearchModal(false)} className="text-white/40 hover:text-white">Close</button>
                             </div>
-                            <button onClick={() => setShowSearchModal(false)} className="text-white/40 hover:text-white">Close</button>
+
+                            {/* Search Input */}
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleOpenSearch('global', -1, (e.target as any).query.value);
+                                }}
+                                className="flex gap-2"
+                            >
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                                    <input
+                                        name="query"
+                                        placeholder="Search for products (e.g. 'Gold Ring', 'Velvet Box')..."
+                                        className="w-full bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:border-white/30 outline-none"
+                                        defaultValue={searchingItemCtx?.query || ''}
+                                        autoFocus
+                                    />
+                                </div>
+                                <button type="submit" className="px-4 py-2 bg-white text-black rounded-lg font-medium">Search</button>
+                            </form>
                         </div>
 
                         <div className="flex-1 overflow-auto p-6">
@@ -272,6 +296,10 @@ export default function SourcingDashboard() {
                                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
                                     <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                                     <p className="text-white/40">Querying global databases...</p>
+                                </div>
+                            ) : searchResults.length === 0 ? (
+                                <div className="text-center py-20 text-white/40">
+                                    Enter a product name to search global suppliers.
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

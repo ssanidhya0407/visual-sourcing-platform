@@ -35,12 +35,7 @@ export function RecommendationSection({ results }: RecommendationSectionProps) {
                 ))}
             </div>
 
-            <div className="flex justify-center pt-12">
-                <a href="/internal/sourcing" className="flex items-center gap-2 px-10 py-4 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-full hover:opacity-90 transition-all shadow-lg hover:shadow-xl">
-                    Full Sourcing Report
-                    <ArrowRight className="w-5 h-5" />
-                </a>
-            </div>
+
         </div>
     );
 }
