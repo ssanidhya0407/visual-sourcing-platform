@@ -8,6 +8,11 @@ const defaultUsers = [
     { email: 'sourcing@yash.com', password: 'password123', displayName: 'Sourcing Manager', role: 'sourcing' },
 ];
 
+// Verified Images (3 Core)
+const IMG_GOLD_CHAIN = 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&auto=format&fit=crop&q=60';
+const IMG_DIAMOND_RING = 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=60';
+const IMG_VINTAGE_RING = 'https://images.unsplash.com/photo-1603974372039-adc49044b6bd?w=800&auto=format&fit=crop&q=60';
+
 const internalInventory: ProductSKU[] = [
     // RINGS
     {
@@ -17,7 +22,7 @@ const internalInventory: ProductSKU[] = [
         baseCost: 250,
         moq: 5,
         leadTime: '3-5 days',
-        image: 'https://images.unsplash.com/photo-1515562141207-7a88fb0537bf?w=800&auto=format&fit=crop&q=60', // Verified: Gold Ring
+        image: IMG_VINTAGE_RING, // Replaced broken gold ring
         attributes: { category: 'ring', shape: 'round', stoneDensity: 'none', metalVisibility: 'high', finish: 'polished' },
         source: 'internal',
     },
@@ -28,7 +33,7 @@ const internalInventory: ProductSKU[] = [
         baseCost: 1200,
         moq: 1,
         leadTime: '7-10 days',
-        image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=60', // Verified: Diamond Ring
+        image: IMG_DIAMOND_RING,
         attributes: { category: 'ring', shape: 'oval', stoneDensity: 'high', metalVisibility: 'low', finish: 'polished' },
         source: 'internal',
     },
@@ -39,7 +44,7 @@ const internalInventory: ProductSKU[] = [
         baseCost: 800,
         moq: 3,
         leadTime: '5-7 days',
-        image: 'https://images.unsplash.com/photo-1603974372039-adc49044b6bd?w=800&auto=format&fit=crop&q=60', // Verified: Rose Gold
+        image: IMG_VINTAGE_RING,
         attributes: { category: 'ring', shape: 'round', stoneDensity: 'medium', metalVisibility: 'medium', finish: 'vintage' },
         source: 'internal',
     },
@@ -51,7 +56,7 @@ const internalInventory: ProductSKU[] = [
         baseCost: 850,
         moq: 2,
         leadTime: '5-7 days',
-        image: 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?w=800&auto=format&fit=crop&q=60', // Verified: Pendant
+        image: IMG_GOLD_CHAIN, // Replaced broken pendant
         attributes: { category: 'necklace', shape: 'emerald', stoneDensity: 'low', metalVisibility: 'medium', finish: 'matte' },
         source: 'internal',
     },
@@ -62,7 +67,7 @@ const internalInventory: ProductSKU[] = [
         baseCost: 400,
         moq: 10,
         leadTime: '2-4 days',
-        image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&auto=format&fit=crop&q=60', // Verified: Gold Chain
+        image: IMG_GOLD_CHAIN,
         attributes: { category: 'necklace', shape: 'link', stoneDensity: 'none', metalVisibility: 'high', finish: 'polished' },
         source: 'internal',
     },
@@ -74,7 +79,7 @@ const internalInventory: ProductSKU[] = [
         baseCost: 1500,
         moq: 2,
         leadTime: '7-10 days',
-        image: 'https://images.unsplash.com/photo-1515562141207-7a88fb0537bf?w=800&auto=format&fit=crop&q=60', // Verified: Tennis / Bracelet
+        image: IMG_DIAMOND_RING, // Replaced broken tennis bracelet with diamond image
         attributes: { category: 'bracelet', shape: 'round', stoneDensity: 'high', metalVisibility: 'low', finish: 'polished' },
         source: 'internal',
     },
@@ -89,7 +94,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 45,
         moq: 50,
         leadTime: '20-30 days',
-        image: 'https://images.unsplash.com/photo-1515562141207-7a88fb0537bf?w=800&auto=format&fit=crop&q=60', // Reuse: Gold Band
+        image: IMG_VINTAGE_RING, // Replaced broken
         attributes: { category: 'ring', shape: 'cushion', stoneDensity: 'high', metalVisibility: 'low', finish: 'polished' },
         source: 'external',
     },
@@ -100,7 +105,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 12,
         moq: 100,
         leadTime: '15-20 days',
-        image: 'https://images.unsplash.com/photo-1603974372039-adc49044b6bd?w=800&auto=format&fit=crop&q=60', // Reuse: Stacking Ring
+        image: IMG_VINTAGE_RING,
         attributes: { category: 'ring', shape: 'round', stoneDensity: 'none', metalVisibility: 'high', finish: 'matte' },
         source: 'external',
     },
@@ -111,7 +116,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 25,
         moq: 50,
         leadTime: '20-25 days',
-        image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=60', // Reuse: Fancy Ring
+        image: IMG_DIAMOND_RING, // Use Diamond for fancy ring
         attributes: { category: 'ring', shape: 'oval', stoneDensity: 'medium', metalVisibility: 'medium', finish: 'antique' },
         source: 'external',
     },
@@ -122,7 +127,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 35,
         moq: 50,
         leadTime: '15-20 days',
-        image: 'https://images.unsplash.com/photo-1589128773085-78d1031c26b2?w=800&auto=format&fit=crop&q=60', // Reuse: Tennis (Looks like Eternity)
+        image: IMG_DIAMOND_RING, // Use Diamond for replica
         attributes: { category: 'ring', shape: 'round', stoneDensity: 'high', metalVisibility: 'low', finish: 'polished' },
         source: 'external',
     },
@@ -134,7 +139,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 15,
         moq: 100,
         leadTime: '15-20 days',
-        image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&auto=format&fit=crop&q=60', // Verified: Gold Chain Link
+        image: IMG_GOLD_CHAIN,
         attributes: { category: 'bracelet', shape: 'link', stoneDensity: 'none', metalVisibility: 'high', finish: 'brushed' },
         source: 'external',
     },
@@ -145,7 +150,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 18,
         moq: 100,
         leadTime: '20 days',
-        image: 'https://images.unsplash.com/photo-1611591437281-460bfbe157a8?w=800&auto=format&fit=crop&q=60', // Verified: Tennis/Cuff
+        image: IMG_GOLD_CHAIN, // Replaced broken cuff
         attributes: { category: 'bracelet', shape: 'cuff', stoneDensity: 'low', metalVisibility: 'high', finish: 'polished' },
         source: 'external',
     },
@@ -157,7 +162,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 8,
         moq: 200,
         leadTime: '25-30 days',
-        image: 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?w=800&auto=format&fit=crop&q=60', // Verified: Pendant/Necklace
+        image: IMG_GOLD_CHAIN, // Replaced broken layered
         attributes: { category: 'necklace', shape: 'layered', stoneDensity: 'low', metalVisibility: 'high', finish: 'polished' },
         source: 'external',
     },
