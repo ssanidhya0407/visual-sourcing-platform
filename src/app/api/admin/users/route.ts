@@ -54,3 +54,25 @@ export async function POST(request: Request) {
         }, { status: 500 });
     }
 }
+// Delete User
+export async function DELETE(request: Request) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const uid = searchParams.get('uid');
+
+        if (!uid) {
+            return NextResponse.json({ success: false, error: 'User UID required' }, { status: 400 });
+        }
+
+        await auth.deleteUser(uid);
+        await AuditService.log('USER_DELETED', `Deleted user: ${uid}`, 'admin');
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return NextResponse.json({
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to delete user'
+        }, { status: 500 });
+    }
+}
