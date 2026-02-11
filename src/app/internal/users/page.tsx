@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, User, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { auth } from "@/lib/firebase"; // Client Auth
 
 interface UserData {
     uid: string;
@@ -27,12 +28,27 @@ export default function UsersPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetchUsers();
+        // Wait for Auth to be ready
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                fetchUsers();
+            } else {
+                setLoading(false); // No user, stop loading but list will be empty or redirect handled by layout
+            }
+        });
+        return () => unsubscribe();
     }, []);
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch('/api/admin/users');
+            const user = auth.currentUser;
+            if (!user) return;
+            const token = await user.getIdToken();
+
+            const res = await fetch('/api/admin/users', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
             const data = await res.json();
             if (data.success) {
                 setUsers(data.data?.users || data.users || []);
@@ -50,9 +66,20 @@ export default function UsersPage() {
         setError('');
 
         try {
+            const user = auth.currentUser;
+            if (!user) {
+                setError("You must be logged in.");
+                setCreating(false);
+                return;
+            }
+            const token = await user.getIdToken();
+
             const res = await fetch('/api/admin/users', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     email: newUserEmail,
                     password: newUserPassword,
@@ -142,7 +169,14 @@ export default function UsersPage() {
                                             onClick={async () => {
                                                 if (confirm('Are you sure you want to delete this user? This cannot be undone.')) {
                                                     try {
-                                                        const res = await fetch(`/api/admin/users?uid=${user.uid}`, { method: 'DELETE' });
+                                                        const currentUser = auth.currentUser;
+                                                        if (!currentUser) return;
+                                                        const token = await currentUser.getIdToken();
+
+                                                        const res = await fetch(`/api/admin/users?uid=${user.uid}`, {
+                                                            method: 'DELETE',
+                                                            headers: { 'Authorization': `Bearer ${token}` }
+                                                        });
                                                         if (res.ok) fetchUsers();
                                                         else alert('Failed to delete user');
                                                     } catch (e) {
