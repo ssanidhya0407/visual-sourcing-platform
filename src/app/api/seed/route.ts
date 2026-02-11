@@ -134,7 +134,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 15,
         moq: 100,
         leadTime: '15-20 days',
-        image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&auto=format&fit=crop&q=60', // Reuse: Chain Link
+        image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&auto=format&fit=crop&q=60', // Verified: Gold Chain Link
         attributes: { category: 'bracelet', shape: 'link', stoneDensity: 'none', metalVisibility: 'high', finish: 'brushed' },
         source: 'external',
     },
@@ -145,7 +145,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 18,
         moq: 100,
         leadTime: '20 days',
-        image: 'https://images.unsplash.com/photo-1611591437281-460bfbe157a8?w=800&auto=format&fit=crop&q=60', // Reuse: Tennis (Cuff-ish)
+        image: 'https://images.unsplash.com/photo-1611591437281-460bfbe157a8?w=800&auto=format&fit=crop&q=60', // Verified: Tennis/Cuff
         attributes: { category: 'bracelet', shape: 'cuff', stoneDensity: 'low', metalVisibility: 'high', finish: 'polished' },
         source: 'external',
     },
@@ -157,19 +157,7 @@ const externalManufacturers: ProductSKU[] = [
         baseCost: 8,
         moq: 200,
         leadTime: '25-30 days',
-        image: 'https://images.unsplash.com/photo-1601121141499-17ae80afc03a?w=800&auto=format&fit=crop&q=60', // Verified: Layered Necklace
-        attributes: { category: 'necklace', shape: 'layered', stoneDensity: 'low', metalVisibility: 'high', finish: 'polished' },
-        source: 'external',
-    },
-    // NECKLACES
-    {
-        id: 'EXT-NECK-001',
-        name: 'Layered Necklace Set',
-        material: 'Alloy',
-        baseCost: 8,
-        moq: 200,
-        leadTime: '25-30 days',
-        image: 'https://images.unsplash.com/photo-1601121141499-17ae80afc03a?w=800&auto=format&fit=crop&q=60', // Layered
+        image: 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?w=800&auto=format&fit=crop&q=60', // Verified: Pendant/Necklace
         attributes: { category: 'necklace', shape: 'layered', stoneDensity: 'low', metalVisibility: 'high', finish: 'polished' },
         source: 'external',
     },
