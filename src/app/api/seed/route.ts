@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase-admin';
+import { db, auth } from '@/lib/firebase-admin';
 import { ProductSKU } from '@/services/catalogService';
+
+const defaultUsers = [
+    { email: 'admin@yash.com', password: 'password123', displayName: 'Admin User', role: 'admin' },
+    { email: 'sales@yash.com', password: 'password123', displayName: 'Sales Rep', role: 'sales' },
+    { email: 'sourcing@yash.com', password: 'password123', displayName: 'Sourcing Manager', role: 'sourcing' },
+];
 
 const internalInventory: ProductSKU[] = [
     // RINGS
@@ -194,9 +200,28 @@ export async function GET() {
 
         await newBatch.commit();
 
+        // 3. Seed Users
+        const userResults = [];
+        for (const user of defaultUsers) {
+            try {
+                // Check if user exists
+                await auth.getUserByEmail(user.email);
+                userResults.push(`User ${user.email} already exists.`);
+            } catch (error) {
+                // User doesn't exist, create them
+                const userRecord = await auth.createUser({
+                    email: user.email,
+                    password: user.password,
+                    displayName: user.displayName,
+                });
+                await auth.setCustomUserClaims(userRecord.uid, { role: user.role });
+                userResults.push(`Created user ${user.email} (${user.role}).`);
+            }
+        }
+
         return NextResponse.json({
             success: true,
-            message: `Seeded ${allProducts.length} products to Firestore successfully.`
+            message: `Seeded ${allProducts.length} products. User actions: ${userResults.join(', ')}`
         });
     } catch (error) {
         console.error("Seeding error:", error);

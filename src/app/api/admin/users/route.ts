@@ -10,6 +10,7 @@ export async function GET() {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
+            role: (user.customClaims?.role as string) || 'viewer', // Default to viewer
             creationTime: user.metadata.creationTime,
             lastSignInTime: user.metadata.lastSignInTime,
         }));
@@ -25,7 +26,7 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { email, password, displayName } = body;
+        const { email, password, displayName, role } = body;
 
         if (!email || !password) {
             return NextResponse.json({ success: false, error: 'Email and password required' }, { status: 400 });
@@ -37,7 +38,12 @@ export async function POST(request: Request) {
             displayName,
         });
 
-        await AuditService.log('USER_CREATED', `Created new user: ${email}`, 'admin');
+        // Assign Role via Custom Claims
+        if (role) {
+            await auth.setCustomUserClaims(userRecord.uid, { role });
+        }
+
+        await AuditService.log('USER_CREATED', `Created new user: ${email} with role: ${role}`, 'admin');
 
         return NextResponse.json({ success: true, user: userRecord });
     } catch (error) {

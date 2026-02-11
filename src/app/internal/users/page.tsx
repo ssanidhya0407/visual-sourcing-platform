@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Search, User, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface UserData {
     uid: string;
     email: string;
     displayName: string;
+    role: string;
     lastSignInTime: string;
     creationTime: string;
 }
@@ -20,6 +22,7 @@ export default function UsersPage() {
     const [newUserEmail, setNewUserEmail] = useState('');
     const [newUserPassword, setNewUserPassword] = useState('');
     const [newUserName, setNewUserName] = useState('');
+    const [newUserRole, setNewUserRole] = useState('sales');
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState('');
 
@@ -53,7 +56,8 @@ export default function UsersPage() {
                 body: JSON.stringify({
                     email: newUserEmail,
                     password: newUserPassword,
-                    displayName: newUserName
+                    displayName: newUserName,
+                    role: newUserRole
                 })
             });
 
@@ -63,6 +67,7 @@ export default function UsersPage() {
                 setNewUserEmail('');
                 setNewUserPassword('');
                 setNewUserName('');
+                setNewUserRole('sales');
                 fetchUsers(); // Refresh list
             } else {
                 setError(data.error || 'Failed to create user');
@@ -118,7 +123,14 @@ export default function UsersPage() {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Admin</span>
+                                    <span className={cn(
+                                        "px-2 py-1 text-xs rounded-full capitalize",
+                                        user.role === 'admin' ? "bg-red-500/20 text-red-400" :
+                                            user.role === 'sourcing' ? "bg-green-500/20 text-green-400" :
+                                                "bg-blue-500/20 text-blue-400"
+                                    )}>
+                                        {user.role || 'viewer'}
+                                    </span>
                                 </td>
                                 <td className="px-6 py-4 text-sm text-white/60">
                                     {new Date(user.creationTime).toLocaleDateString()}
@@ -188,6 +200,20 @@ export default function UsersPage() {
                                     onChange={e => setNewUserPassword(e.target.value)}
                                 />
                                 <p className="text-xs text-white/40 mt-1">Must be at least 6 characters</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm text-white/60 mb-1">Role</label>
+                                <select
+                                    required
+                                    className="w-full bg-black/50 border border-white/10 rounded-lg p-3 focus:border-white/30 outline-none transition-colors"
+                                    value={newUserRole}
+                                    onChange={e => setNewUserRole(e.target.value)}
+                                >
+                                    <option value="sales">Sales</option>
+                                    <option value="sourcing">Sourcing</option>
+                                    <option value="admin">Admin</option>
+                                </select>
                             </div>
 
                             {error && <p className="text-red-400 text-sm">{error}</p>}
